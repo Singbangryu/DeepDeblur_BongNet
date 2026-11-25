@@ -1,6 +1,6 @@
 # BongNet
 
-BongNet is a PyTorch model I built for an image deblurring competition in an AI course. It processes a blurry RGB image at two resolutions and predicts a pixelwise correction. The model has **3,746,384 parameters**. On my 511-frame GoPro validation split, the epoch-900 checkpoint raised mean PSNR from **25.4284 to 28.8164 dB**.
+BongNet is a PyTorch model for single-image motion deblurring. It processes a blurry RGB image at two resolutions and predicts a pixelwise correction. The model has **3,746,384 parameters**. On my 511-frame GoPro validation split, the epoch-900 checkpoint raised mean PSNR from **25.4284 to 28.8164 dB**.
 
 ![Matching native-resolution crops showing the blurry input, BongNet output, and sharp reference](assets/gopro-training-blur-gamma.webp)
 
@@ -69,17 +69,21 @@ Each point averages the gain of the two blur variants for one frame. The 600 pre
 
 BongNet makes the paving joints easier to see in this example from the report. The full-frame PSNR still dropped by 1.41 dB. A single score across the image can miss changes like this in a small region.
 
-## Competition test images
+## HIDE and RealBlur-J evaluation
 
-The competition supplied 30 blurry 512 × 512 crops. I matched each one pixel for pixel to the center of its original image, then took the same crop from the paired sharp reference. I computed PSNR over all RGB pixels using the submitted BongNet PNGs. Gain is the restored PSNR minus the input PSNR, averaged per image in the table.
+I evaluated a 30-image subset of HIDE and RealBlur-J using 512 × 512 center crops. For each input, I matched the RGB pixels to the original blurry frame and cropped the paired sharp reference at the same coordinates. The table reports mean per-image RGB PSNR and the gain over the blurry input.
 
 | Source | Images | Input PSNR | Restored PSNR | Mean gain |
 | --- | ---: | ---: | ---: | ---: |
 | HIDE | 20 | 21.929 dB | 24.675 dB | +2.746 dB |
 | RealBlur-J | 10 | 25.448 dB | 25.262 dB | −0.185 dB |
-| All competition images | 30 | 23.102 dB | 24.871 dB | +1.769 dB |
+| All 30 crops | 30 | 23.102 dB | 24.871 dB | +1.769 dB |
 
-PSNR improved on 19 of the 20 HIDE crops and 4 of the 10 RealBlur-J crops. The comparisons below show the three largest gains on RealBlur-J.
+PSNR improved on 19 of the 20 HIDE crops and 4 of the 10 RealBlur-J crops.
+
+### RealBlur-J comparisons
+
+These comparisons show the four RealBlur-J crops that gained PSNR and a low-light scene where PSNR fell.
 
 ![RealBlur-J folding table, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-22.webp)
 
@@ -92,6 +96,14 @@ PSNR improved on 19 of the 20 HIDE crops and 4 of the 10 RealBlur-J crops. The c
 ![RealBlur-J auditorium stairs and seats, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-30.webp)
 
 *Sample 30 (`scene030-21.png`), +0.200 dB. The stair edges are slightly clearer, while the thin outlines between rows of seats are softer than in the sharp reference.*
+
+![RealBlur-J nighttime window and planters, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-21.webp)
+
+*Sample 21 (`scene171-17.png`), +0.105 dB. The window trim and pale planter edges are slightly clearer. The light streaks remain visible.*
+
+![RealBlur-J reflective metal in low light, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-27.webp)
+
+*Sample 27 (`scene061-18.png`), −0.731 dB. BongNet introduces wavy color patterns on the metal panel that are absent from the sharp reference.*
 
 ## Run
 
