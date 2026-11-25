@@ -69,6 +69,30 @@ Each point averages the gain of the two blur variants for one frame. The 600 pre
 
 BongNet makes the paving joints easier to see in this example from the report. The full-frame PSNR still dropped by 1.41 dB. A single score across the image can miss changes like this in a small region.
 
+## Competition test images
+
+The competition supplied 30 blurry 512 × 512 crops. I matched each one pixel for pixel to the center of its original image, then took the same crop from the paired sharp reference. I computed PSNR over all RGB pixels using the submitted BongNet PNGs. Gain is the restored PSNR minus the input PSNR, averaged per image in the table.
+
+| Source | Images | Input PSNR | Restored PSNR | Mean gain |
+| --- | ---: | ---: | ---: | ---: |
+| HIDE | 20 | 21.929 dB | 24.675 dB | +2.746 dB |
+| RealBlur-J | 10 | 25.448 dB | 25.262 dB | −0.185 dB |
+| All competition images | 30 | 23.102 dB | 24.871 dB | +1.769 dB |
+
+PSNR improved on 19 of the 20 HIDE crops and 4 of the 10 RealBlur-J crops. The comparisons below show the three largest gains on RealBlur-J.
+
+![RealBlur-J folding table, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-22.webp)
+
+*Sample 22 (`scene032-11.png`), +1.047 dB. The edge of the tabletop and the curved front leg are better defined.*
+
+![RealBlur-J illuminated sculpture, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-28.webp)
+
+*Sample 28 (`scene039-10.png`), +0.568 dB. The rim of the sculpture looks a little clearer. Several bright contours still blend together.*
+
+![RealBlur-J auditorium stairs and seats, shown as blurred input, BongNet output, and sharp reference](assets/realblur-sample-30.webp)
+
+*Sample 30 (`scene030-21.png`), +0.200 dB. The stair edges are slightly clearer, while the thin outlines between rows of seats are softer than in the sharp reference.*
+
 ## Run
 
 Install the dependencies, then point the training script at the extracted GOPRO_Large folder containing `train/` and `test/`.
@@ -94,4 +118,6 @@ For a folder of images without sharp references, add `--inference-only` and set 
 
 ## Data credit
 
-The comparisons show crops from GOPRO_Large by Seungjun Nah, Tae Hyun Kim, and Kyoung Mu Lee (CVPR 2017). BongNet produced the center panels. [GoPro dataset](https://seungjunnah.github.io/Datasets/gopro.html) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- The GoPro comparisons show crops from GOPRO_Large by Seungjun Nah, Tae Hyun Kim, and Kyoung Mu Lee (CVPR 2017). BongNet produced the center panels. [GoPro dataset](https://seungjunnah.github.io/Datasets/gopro.html) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- The RealBlur-J comparisons use images by Jaesung Rim, Haeyun Lee, Jucheol Won, and Sunghyun Cho (ECCV 2020). The input and reference images are center-cropped and placed alongside BongNet's restoration of the input crop. [RealBlur dataset](https://github.com/rimchang/RealBlur) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- The HIDE scores use the dataset from Shen et al., *Human-Aware Motion Deblurring* (ICCV 2019). [HIDE dataset](https://github.com/joanshen0508/HA_deblur)
